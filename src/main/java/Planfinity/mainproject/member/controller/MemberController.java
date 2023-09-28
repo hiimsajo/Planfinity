@@ -12,14 +12,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @Validated
 public class MemberController {
 
     private final MemberService memberService;
+
 
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -94,4 +97,13 @@ public class MemberController {
             return ResponseEntity.badRequest().body(e.getExceptionCode().getMessage());
         }
     }
+
+    @PostMapping("/members/upload")
+    public ResponseEntity uploadFile(@RequestPart("file") MultipartFile file) throws IOException {
+        String imageUrl = memberService.uploadAndUpdateProfileImage(file, "profile-images");
+
+        return ResponseEntity.ok(imageUrl);
+    }
+
+
 }

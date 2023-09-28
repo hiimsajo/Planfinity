@@ -8,14 +8,21 @@ import Planfinity.mainproject.member.domain.Member;
 import Planfinity.mainproject.member.domain.Terminated;
 import Planfinity.mainproject.member.dto.SignupDto;
 import Planfinity.mainproject.member.repository.MemberRepository;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Transactional
 @Service
@@ -24,12 +31,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils authorityUtils;
+    private final AmazonS3Client amazonS3Client;
 
     public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder,
-                         CustomAuthorityUtils authorityUtils) {
+                         CustomAuthorityUtils authorityUtils, AmazonS3Client amazonS3Client) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityUtils = authorityUtils;
+        this.amazonS3Client = amazonS3Client;
     }
 
     public Member createMember(SignupDto.Request signupDto) {
@@ -139,4 +148,68 @@ public class MemberService {
 
         memberRepository.save(member);
     }
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+    public String uploadAndUpdateProfileImage(MultipartFile file, String dirName) throws IOException {
+        Member member = findMember();
+
+        // 기존 이미지 삭제
+        String previousImageUrl = getPreviousImageUrlFromMember(member);
+        if (previousImageUrl != null) {
+            deleteImageFromS3(previousImageUrl); // S3에서 이미지 삭제
+        }
+
+        // 새로운 이미지 업로드
+        String imageUrl = upload(file, dirName);
+
+        // 이미지 URL 업데이트
+        updateProfileImageUrl(member, imageUrl);
+
+        return imageUrl;
+    }
+
+    public String upload(MultipartFile file, String dirName) throws IOException {
+
+        String storedFilePath = dirName + "/" + UUID.randomUUID() + file.getOriginalFilename();
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        amazonS3Client.putObject(bucket, storedFilePath, file.getInputStream(), metadata);
+        return amazonS3Client.getUrl(bucket, storedFilePath).toString();
+    }
+    private void deleteImageFromS3(String imageUrl) {
+        String objectKey = getObjectKeyFromUrl(imageUrl);
+
+        if (objectKey != null) {
+            try {
+                // S3에서 이미지 삭제
+                amazonS3Client.deleteObject(bucket, objectKey);
+            } catch (AmazonS3Exception e) {
+                // S3에서 이미지 삭제 실패 시 예외 처리
+                // 로그 또는 오류 메시지 출력
+                e.printStackTrace();
+                throw new RuntimeException("Failed to delete image from S3: " + e.getMessage());
+            }
+        } else {
+            // 올바르지 않은 이미지 URL
+            throw new IllegalArgumentException("Invalid image URL: " + imageUrl);
+        }
+    }
+    private String getObjectKeyFromUrl(String imageUrl) {
+        int bucketIndex = imageUrl.indexOf(bucket);
+        if (bucketIndex != -1) {
+            return imageUrl.substring(bucketIndex + bucket.length() + 1); // 1은 '/'의 길이입니다.
+        }
+        return null; // 올바른 URL이 아니라면 null을 반환합니다.
+    }
+    private void updateProfileImageUrl(Member member, String imageUrl) {
+        member.setProfileImage(imageUrl);
+        memberRepository.save(member);
+    }
+
+    private String getPreviousImageUrlFromMember(Member member) {
+        // Member 엔터티에서 기존 이미지 URL을 가져오는 코드
+        return member.getProfileImage();
+    }
+
 }

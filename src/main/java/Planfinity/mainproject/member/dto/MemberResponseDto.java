@@ -17,6 +17,8 @@ public class MemberResponseDto {
         private String password;
         @JsonProperty(value = "nickname")
         private String nickname;
+        @JsonProperty(value = "profileImage")
+        private String profileImage;
         @JsonProperty(value = "registered_at")
         private String registeredAt;
         @JsonProperty(value = "terminated_at")
@@ -29,6 +31,7 @@ public class MemberResponseDto {
             this.email = member.getEmail();
             this.password = member.getPassword();
             this.nickname = member.getNickname();
+            this.profileImage = member.getProfileImage();
             this.registeredAt = member.getRegisteredAt();
             this.terminatedAt = member.getTerminatedAt();
             this.terminated = member.getTerminated();
