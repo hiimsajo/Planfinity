@@ -153,13 +153,11 @@ public class MemberService {
     private String bucket;
     public String uploadAndUpdateProfileImage(MultipartFile file, String dirName) throws IOException {
         Member member = findMember();
-
         // 기존 이미지 삭제
         String previousImageUrl = getPreviousImageUrlFromMember(member);
         if (previousImageUrl != null) {
-            deleteImageFromS3(previousImageUrl); // S3에서 이미지 삭제
+            deleteImageFromS3(previousImageUrl);
         }
-
         // 새로운 이미지 업로드
         String imageUrl = upload(file, dirName);
 
@@ -182,11 +180,8 @@ public class MemberService {
 
         if (objectKey != null) {
             try {
-                // S3에서 이미지 삭제
                 amazonS3Client.deleteObject(bucket, objectKey);
             } catch (AmazonS3Exception e) {
-                // S3에서 이미지 삭제 실패 시 예외 처리
-                // 로그 또는 오류 메시지 출력
                 e.printStackTrace();
                 throw new RuntimeException("Failed to delete image from S3: " + e.getMessage());
             }
@@ -198,9 +193,9 @@ public class MemberService {
     private String getObjectKeyFromUrl(String imageUrl) {
         int bucketIndex = imageUrl.indexOf(bucket);
         if (bucketIndex != -1) {
-            return imageUrl.substring(bucketIndex + bucket.length() + 1); // 1은 '/'의 길이입니다.
+            return imageUrl.substring(bucketIndex + bucket.length() + 1);
         }
-        return null; // 올바른 URL이 아니라면 null을 반환합니다.
+        return null;
     }
     private void updateProfileImageUrl(Member member, String imageUrl) {
         member.setProfileImage(imageUrl);
@@ -208,7 +203,6 @@ public class MemberService {
     }
 
     private String getPreviousImageUrlFromMember(Member member) {
-        // Member 엔터티에서 기존 이미지 URL을 가져오는 코드
         return member.getProfileImage();
     }
 
