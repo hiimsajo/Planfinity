@@ -7,6 +7,7 @@ import Planfinity.mainproject.member.repository.MemberRepository;
 import Planfinity.mainproject.member.service.MemberService;
 import Planfinity.mainproject.todogroup.domain.TodoGroup;
 import Planfinity.mainproject.todogroup.dto.CreateTodoGroupDto;
+import Planfinity.mainproject.todogroup.dto.InvitationTodoGroupDto;
 import Planfinity.mainproject.todogroup.dto.UpdateTodoGroupDto;
 import Planfinity.mainproject.todogroup.repository.TodoGroupRepository;
 import org.springframework.stereotype.Service;
@@ -75,4 +76,30 @@ public class TodoGroupService {
 
     }
 
+    @Transactional
+    public TodoGroup invite(Long todoGroupId, InvitationTodoGroupDto.Post invitationTodoGroupDto) {
+        TodoGroup findTodoGroup = findVerifiedTodoGroup(todoGroupId);
+        Member owner = memberService.findMember();
+
+        if (!findTodoGroup.isOwner(owner)) {
+            throw new BusinessLogicException(ExceptionCode.IS_NOT_OWNER);
+        }
+
+        // 초대하려는 Email이 실제 DB에 존재하는지 확인
+        List<String> emails = invitationTodoGroupDto.extractEmails();
+        List<Member> membersByEmail = memberRepository.findByEmailIn(emails);
+
+        if (emails.size() != membersByEmail.size()) {
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+        }
+
+        findTodoGroup.invites(membersByEmail);
+        return findTodoGroup;
+    }
+
+    @Transactional
+    public TodoGroup getInviteMember(Long todoGroupId) {
+        Member member = memberService.findMember();
+        return findVerifiedTodoGroup(todoGroupId);
+    }
 }
