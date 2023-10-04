@@ -141,7 +141,7 @@ public class MemberService {
 
         // 회원의 권한을 제한하고 탈퇴 시간 업데이트
         member.updateTerminate(Terminated.TRUE);
-        member.setTerminatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        member.setTerminatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 
         // 권한을 null로 설정 (이전 권한을 삭제)
         member.setRoles(null);
