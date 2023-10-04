@@ -2,6 +2,7 @@ package Planfinity.mainproject.comment.dto;
 
 import Planfinity.mainproject.comment.domain.Comment;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.File;
 import lombok.Getter;
 
 public class GetAllComment {
@@ -31,7 +32,7 @@ public class GetAllComment {
             this.todoId = comment.getTodo().getTodoId();
             this.commentId = comment.getCommentId();
             this.nickName = comment.getMember().getNickname();
-//            this.profileImage = String.join(File.separator, fileUploadPath, comment.getMember().getProfileImage());
+            this.profileImage = comment.getMember().getProfileImage();
             this.commentContent = comment.getCommentContent();
         }
 

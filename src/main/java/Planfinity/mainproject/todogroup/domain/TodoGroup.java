@@ -2,6 +2,7 @@ package Planfinity.mainproject.todogroup.domain;
 
 import Planfinity.mainproject.member.domain.Member;
 import Planfinity.mainproject.todo.domain.Todo;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,6 +47,19 @@ public class TodoGroup {
         if(title != null) {
             this.todoGroupTitle = title;
         }
+    }
+
+    // 전달해준 Member가 해당 TodoGroup의 생성자인지 확인하는 메서드
+    public boolean isOwner(Member member) {
+        return this.member.getMemberId() == member.getMemberId();
+    }
+
+    // 전달받은 Member들을 해당 TodoGroup에 초대하는 메서드
+    public void invites(List<Member> inviteMembers) {
+        this.todoGroupMembers.addAll(
+            inviteMembers.stream()
+                .map((m) -> new TodoGroupMember(this, m))
+                .collect(Collectors.toList()));
     }
 
 }

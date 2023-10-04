@@ -6,6 +6,7 @@ import Planfinity.mainproject.comment.dto.CreateComment;
 import Planfinity.mainproject.comment.dto.GetAllComment.Response;
 import Planfinity.mainproject.comment.dto.UpdateComment;
 import Planfinity.mainproject.comment.service.CommentService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +20,9 @@ import java.util.stream.Collectors;
 @RestController
 @Validated
 public class CommentController {
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String fileUploadBucket;
 
     private final CommentService commentService;
 

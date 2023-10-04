@@ -4,6 +4,8 @@ package Planfinity.mainproject.todogroup.controller;
 import Planfinity.mainproject.todogroup.domain.TodoGroup;
 import Planfinity.mainproject.todogroup.dto.CreateTodoGroupDto;
 import Planfinity.mainproject.todogroup.dto.GetAllTodoGroupDto.Response;
+import Planfinity.mainproject.todogroup.dto.InvitationMemberDto;
+import Planfinity.mainproject.todogroup.dto.InvitationTodoGroupDto;
 import Planfinity.mainproject.todogroup.dto.UpdateTodoGroupDto;
 import Planfinity.mainproject.todogroup.service.TodoGroupService;
 import org.springframework.http.HttpStatus;
@@ -63,6 +65,19 @@ public class TodoGroupController {
         todoGroupService.deleteTodoGroup(todoGroupId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/todogroups/{todo-group-id}/invitation")
+    public ResponseEntity invite(@PathVariable("todo-group-id") @Positive Long todoGroupId,
+        @Valid @RequestBody InvitationTodoGroupDto.Post invitationTodoGroupDto) {
+        TodoGroup todoGroup = todoGroupService.invite(todoGroupId, invitationTodoGroupDto);
+        return new ResponseEntity<>(new InvitationTodoGroupDto.Response(todoGroup), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/todogroups/{todo-group-id}/members")
+    public ResponseEntity inviteMember(@PathVariable("todo-group-id") @Positive Long todoGroupId) {
+        TodoGroup todoGroup = todoGroupService.getInviteMember(todoGroupId);
+        return new ResponseEntity(new InvitationMemberDto.Response(todoGroup), HttpStatus.OK);
     }
 
 }
