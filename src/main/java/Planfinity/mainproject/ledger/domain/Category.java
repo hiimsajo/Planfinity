@@ -1,6 +1,6 @@
-package Planfinity.mainproject.category.domain;
+package Planfinity.mainproject.ledger.domain;
 
-import Planfinity.mainproject.ledger.domain.Ledger;
+import Planfinity.mainproject.member.domain.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +22,24 @@ public class Category {
     @Column(name = "category_name", length = 100)
     private String categoryName;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+    public void addMember(Member member) {
+        this.member = member;
+    }
+
     @OneToMany(mappedBy = "category")
     private List<Ledger> ledgers = new ArrayList<>();
+
+    public Category(Member member, String categoryName) {
+        this.member = member;
+        this.categoryName = categoryName;
+    }
+
+    public void changeName(String name) {
+        if (name != null) {
+            this.categoryName = name;
+        }
+    }
 }

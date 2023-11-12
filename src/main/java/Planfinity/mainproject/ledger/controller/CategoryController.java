@@ -1,2 +1,4 @@
-package Planfinity.mainproject.ledger.controller;public class CategoryController {
+package Planfinity.mainproject.ledger.controller;
+
+public class CategoryController {
 }

@@ -1,2 +1,4 @@
-package Planfinity.mainproject.ledger.ledgerDto;public class LedgerTotalResponseDto {
+package Planfinity.mainproject.ledger.ledgerDto;
+
+public class LedgerTotalResponseDto {
 }

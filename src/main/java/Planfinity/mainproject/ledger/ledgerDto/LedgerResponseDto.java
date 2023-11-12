@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LegderResponseDto {
+public class LedgerResponseDto {
     @JsonProperty(value = "member_id")
     private Long memberId;
 

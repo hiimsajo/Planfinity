@@ -1,4 +1,4 @@
-package Planfinity.mainproject.ledger.dto;
+package Planfinity.mainproject.ledger.paymentDto;
 
 public class PaymentDto {
 }

@@ -15,11 +15,13 @@ public class LedgerGroupMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JoinColumn(name = "ledger_group_id")
     private Long LedgerGroupMemberId;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
 
     public void addMember(Member member) {
         this.member = member;
@@ -31,6 +33,11 @@ public class LedgerGroupMember {
 
     public void addLedgerGroup(LedgerGroup ledgerGroup) {
         this.ledgerGroup = ledgerGroup;
+    }
+    public LedgerGroupMember(LedgerGroup ledgerGroup, Member member) {
+        this.member = member;
+        this.ledgerGroup = ledgerGroup;
+
     }
 
 }

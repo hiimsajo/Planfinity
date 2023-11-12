@@ -1,6 +1,5 @@
-package Planfinity.mainproject.payment.domain;
+package Planfinity.mainproject.ledger.domain;
 
-import Planfinity.mainproject.ledger.domain.Ledger;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
