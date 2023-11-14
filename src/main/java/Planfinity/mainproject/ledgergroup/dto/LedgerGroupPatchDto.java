@@ -1,0 +1,22 @@
+package Planfinity.mainproject.ledgergroup.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class LedgerGroupPatchDto {
+
+    @JsonProperty(value = "ledger_group_id")
+    private Long ledgerGroupId;
+
+    @JsonProperty(value = "ledger_group_title")
+    private String ledgerGroupTitle;
+
+    public void setLedgerGroupId(Long ledgerGroupId) {
+        this.ledgerGroupId = ledgerGroupId;
+    }
+}
