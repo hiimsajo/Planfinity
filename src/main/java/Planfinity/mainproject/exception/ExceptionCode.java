@@ -30,7 +30,8 @@ public enum ExceptionCode {
     INOUTCOME_NOT_FOUND(404, "Inoutcome not found"),
     MEMBER_ALREADY_TERMINATED(401, "이미 탈퇴한 회원입니다."),
     MEMBER_TERMINATED(400, "접근 권한이 없습니다."),
-    IS_NOT_OWNER(403, "TodoGroup 생성자가 아닙니다."),;
+    IS_NOT_OWNER(403, "TodoGroup 생성자가 아닙니다."),
+    INOUTCOME_REQUIRED(400, "수입/지출은 필수값입니다.");
 
 
 

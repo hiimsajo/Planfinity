@@ -1,6 +1,5 @@
-package Planfinity.mainproject.inoutcome.domain;
+package Planfinity.mainproject.ledger.domain;
 
-import Planfinity.mainproject.ledger.domain.Ledger;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,17 +12,16 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class InOutCome {
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "inoutcome_id")
-    private Long inOutComeId;
+    @Column(name = "payment_id")
+    private Long paymentId;
 
-    @Column(name = "inoutcome_name", length = 100)
-    private String inOutComeName;
+    @Column(name = "payment_name", length = 100)
+    private String paymentName;
 
-    @OneToMany(mappedBy = "inOutCome")
+    @OneToMany(mappedBy = "payment")
     private List<Ledger> ledgers = new ArrayList<>();
-
 }
